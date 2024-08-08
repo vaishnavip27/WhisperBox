@@ -1,8 +1,7 @@
-import { Message } from "./User";
 import mongoose, { Schema, Document } from "mongoose";
 
 export interface Message extends Document {
-  content: "string";
+  content: string;
   createdAt: Date;
 }
 
@@ -23,7 +22,7 @@ export interface User extends Document {
   email: string;
   password: string;
   verifyCode: string;
-  verifyCodeExpiry: string;
+  verifyCodeExpiry: Date;
   isVerified: boolean;
   isAcceptingMessage: boolean;
   messages: Message[];
@@ -42,7 +41,6 @@ const UserSchema: Schema<User> = new Schema({
     required: [true, "Email is required"],
     unique: true,
     match: [/.+\@.+\..+/, "Please use a valid email address"],
-    default: Date.now,
   },
 
   password: {
@@ -72,3 +70,9 @@ const UserSchema: Schema<User> = new Schema({
 
   messages: [MessageSchema],
 });
+
+const UserModel =
+  (mongoose.models.User as mongoose.Model<User>) ||
+  mongoose.model<User>("User", UserSchema);
+
+export default UserModel;
